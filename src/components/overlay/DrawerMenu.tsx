@@ -11,7 +11,7 @@ import {
   Box,
 } from '@chakra-ui/react'
 
-import { SignInButton } from '../SignInButton';
+import { SignInButton } from '../accountActions/SignInButton';
 
 interface Props {
   btnRef: React.RefObject<HTMLButtonElement>;
