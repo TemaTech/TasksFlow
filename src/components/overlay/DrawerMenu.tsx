@@ -1,5 +1,4 @@
 import React from 'react'
-
 import {
   Drawer,
   DrawerBody,
@@ -7,11 +6,9 @@ import {
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
-  DrawerCloseButton,
-  Box,
+  DrawerCloseButton
 } from '@chakra-ui/react'
-
-import { SignInButton } from '../accountActions/SignInButton';
+import { DrawerAccount } from '../accountActions/DrawerAccount'
 
 interface Props {
   btnRef: React.RefObject<HTMLButtonElement>;
@@ -38,7 +35,7 @@ export const DrawerMenu = ({ btnRef, onClose, isOpen }: Props) => {
           </DrawerBody>
 
           <DrawerFooter>
-            <SignInButton />
+            <DrawerAccount />
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

@@ -1,11 +1,7 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from "firebase/auth";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { addDoc, collection, deleteDoc, doc, getDoc, getFirestore, onSnapshot, setDoc, updateDoc } from 'firebase/firestore'
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBr5QxoRbz0QBDHJx9s8Y5vmxz5N8Qq_VY",
   authDomain: "tasksflow-e7dc4.firebaseapp.com",
@@ -16,28 +12,77 @@ const firebaseConfig = {
   measurementId: "G-JQE78LKCQN"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();
+const db = getFirestore(app);
 
-// Sign In
-export const SignIn = async () => {
+// Operations with folders
+
+export const addFolder = async (folderName: string) => {
+ try {
   const auth = getAuth();
+  const uid = auth?.currentUser?.uid || '';
+  await addDoc(collection(db, uid), {
+    folderName: folderName,
+    tasks: [],
+  })
+ } catch(err) {
+  console.error("Error during addFolder: ", err);
+ }
+}
+
+export const deleteFolder = async (folderID: string) => {
   try {
-    await signInWithPopup(auth, provider);
+    const auth = getAuth();
+    const uid = auth?.currentUser?.uid || '';
+    await deleteDoc(doc(db, uid, folderID));
   } catch(err) {
-    console.log(err);
-    alert("An error occured during signing in, please try later.");
+    console.error("Error during deleteFolder: ", err);
   }
 }
 
-// Sign Out
-export const SignOut = async () => {
-  const auth = getAuth();
+export const updateFolderName = async (folderID: string, newFolderName: string) => {
   try {
+    const auth = getAuth();
+    const uid = auth?.currentUser?.uid || '';
+    const folderRef = doc(db, uid, folderID);
+    await updateDoc(folderRef, {
+      folderName: newFolderName,
+    })
+  } catch(err) {
+    console.error("Error during updateFolerName: ", err);
+  }
+}
+
+export const getFolderData = async (folderID: string) => {
+  try {
+    const auth = getAuth();
+    const uid = auth?.currentUser?.uid || '';
+    const folderRef = doc(db, uid, folderID);
+    onSnapshot(folderRef, (doc) => {
+      return doc.data();
+    });
+  } catch(err) {
+    console.error("Error during getFolder: ", err);
+  }
+}
+
+// Authentication
+
+export const SignIn = async () => {
+  try {
+    const auth = getAuth();
+    await signInWithPopup(auth, provider);
+  } catch(err) {
+    console.error("Error during signing in: ", err);
+  }
+}
+
+export const SignOut = async () => {
+  try {
+    const auth = getAuth();
     await signOut(auth);
   } catch(err) {
-    console.log(err);
-    alert("An error occured during signing out, please try again.");
+    console.error("Error during signing out: ", err);
   }
 }
