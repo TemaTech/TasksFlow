@@ -19,16 +19,15 @@ const db = getFirestore(app);
 // Operations with folders
 
 export const addFolder = async (folderName: string) => {
- try {
-  const auth = getAuth();
-  const uid = auth?.currentUser?.uid || '';
-  await addDoc(collection(db, uid), {
-    folderName: folderName,
-    tasks: [],
-  })
- } catch(err) {
-  console.error("Error during addFolder: ", err);
- }
+  try {
+    const auth = getAuth();
+    const uid = auth?.currentUser?.uid || '';
+    await addDoc(collection(db, uid), {
+      folderName: folderName
+    })
+  } catch(err) {
+    console.error("Error during addFolder: ", err);
+  }
 }
 
 export const deleteFolder = async (folderID: string) => {
@@ -48,7 +47,7 @@ export const updateFolderName = async (folderID: string, newFolderName: string) 
     const folderRef = doc(db, uid, folderID);
     await updateDoc(folderRef, {
       folderName: newFolderName,
-    })
+    });
   } catch(err) {
     console.error("Error during updateFolerName: ", err);
   }
@@ -60,6 +59,64 @@ export const getFolderData = async (folderID: string) => {
     const uid = auth?.currentUser?.uid || '';
     const folderRef = doc(db, uid, folderID);
     onSnapshot(folderRef, (doc) => {
+      return doc.data();
+    });
+  } catch(err) {
+    console.error("Error during getFolder: ", err);
+  }
+}
+
+// Operations with tasks
+
+interface Task {
+  taskName: string;
+  taskDescription: string;
+  taskPriority: string;
+  taskUntilDate: string;
+}
+
+export const addTask = async (folderID: string, task: Task) => {
+  try {
+    const auth = getAuth();
+    const uid = auth?.currentUser?.uid || '';
+    const collectionRef = collection(db, uid, folderID, "tasks");
+    await addDoc(collectionRef, {
+      ...task
+    })
+  } catch(err) {
+    console.error("Error during addTask: ", err);
+  }
+}
+
+export const deleteTask = async (folderID: string, taskID: string) => {
+  try {
+    const auth = getAuth();
+    const uid = auth?.currentUser?.uid || '';
+    await deleteDoc(doc(db, uid, folderID, "tasks", taskID));
+  } catch(err) {
+    console.error("Error during deleteTask: ", err);
+  }
+}
+
+export const updateTask = async (folderID: string, taskID: string, propertyName: string, newValue: string) => {
+  try {
+    const auth = getAuth();
+    const uid = auth?.currentUser?.uid || '';
+    const taskRef = doc(db, uid, folderID, "tasks", taskID);
+    await updateDoc(taskRef, {
+      [propertyName]: newValue,
+    });
+  } catch(err) {
+    console.error("Error during updateTask: ", err);
+  }
+}
+
+export const getTaskData = async (folderID: string, taskID: string) => {
+  try {
+    const auth = getAuth();
+    const uid = auth?.currentUser?.uid || '';
+    const taskRef = doc(db, uid, folderID, "tasks", taskID);
+    onSnapshot(taskRef, (doc) => {
       return doc.data();
     });
   } catch(err) {
