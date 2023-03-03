@@ -27,8 +27,8 @@ export const SignOutButton = () => {
             <Text>Are you sure you want to sign out?</Text>
           </ModalBody>
 
-          <ModalFooter>
-            <Button colorScheme='gray' mr={3} onClick={onClose}>
+          <ModalFooter display='flex' alignItems='center' gap={3}>
+            <Button colorScheme='gray' onClick={onClose}>
               Close
             </Button>
             <Button colorScheme='red' variant='ghost' onClick={SignOut}>Sign Out</Button>

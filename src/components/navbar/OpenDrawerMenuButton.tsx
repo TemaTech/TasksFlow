@@ -4,9 +4,13 @@ import { HamburgerIcon } from '@chakra-ui/icons'
 import { IconButton } from "@chakra-ui/button"
 import { useDisclosure } from '@chakra-ui/hooks'
 
-import { DrawerMenu } from '../overlay/DrawerMenu'
+import { DrawerMenu } from '../drawer/DrawerMenu'
 
-export const OpenDrawerMenuButton = () => {
+interface Props {
+  setFolderID: React.Dispatch<React.SetStateAction<string | null>>
+}
+
+export const OpenDrawerMenuButton = ({ setFolderID }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = React.useRef<HTMLButtonElement>(null);
 
@@ -19,7 +23,7 @@ export const OpenDrawerMenuButton = () => {
         variant='ghost' colorScheme='gray' aria-label='Open the folders menu' 
         icon={<HamburgerIcon />} 
       />
-      <DrawerMenu btnRef={btnRef} onClose={onClose} isOpen={isOpen} />
+      <DrawerMenu btnRef={btnRef} onClose={onClose} isOpen={isOpen} setFolderID={setFolderID} />
     </>
   );
 }
