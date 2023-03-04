@@ -18,7 +18,6 @@ interface Folders {
 
 export const List = ({ setFolderID, closeDrawer }: Props) => {
   const [folders, setFolders] = useState<Folders[] | null>(null)
-
   listenForFolders(setFolders);
 
   return (

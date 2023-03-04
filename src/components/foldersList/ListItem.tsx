@@ -3,8 +3,9 @@ import { DeleteIcon, EditIcon, CheckIcon, CloseIcon } from '@chakra-ui/icons';
 import { IconButton } from "@chakra-ui/button";
 import { useEffect, useState } from "react";
 import { SlideFade } from "@chakra-ui/transition";
-import { deleteFolder, updateFolderName } from "../../config/firebase";
+import { updateFolderName } from "../../config/firebase";
 import { Input } from "@chakra-ui/input";
+import { ConfirmFolderDelete } from './ConfirmFolderDelete'
 
 interface Props {
   folderName: string;
@@ -67,11 +68,8 @@ export const ListItem = ({ folderName, id, setFolderID, closeDrawer }: Props) =>
             <IconButton onClick={e => {
               e.stopPropagation();
               setIsEditing(true);
-            }} size='sm' variant='ghost' aria-label='Edit the folder' icon={<EditIcon color='orange.200' />} />
-            <IconButton onClick={e => {
-              e.stopPropagation();
-              deleteFolder(id);
-            }} size='sm' variant='ghost' aria-label='Delete the folder' icon={<DeleteIcon color='red.400' />} />
+            }} size='sm' variant='ghost' aria-label='Edit the folder' icon={<EditIcon />} />
+            <ConfirmFolderDelete folderId={id} folderName={folderName} />
           </Flex>
         }
       </Flex>

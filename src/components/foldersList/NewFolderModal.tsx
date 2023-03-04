@@ -13,11 +13,16 @@ export const NewFolderModal = () => {
   const [inputValue, setInputValue] = useState('');
   const toast = useToast();
 
+  const closeModal = () => {
+    onClose();
+    setInputValue('');
+  }
+
   return (
     <>
       <Button onClick={onOpen} leftIcon={<AddIcon h={3} w={3} />} borderRadius={10} colorScheme='gray' variant='outline'>New Folder</Button>
 
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <Modal isOpen={isOpen} onClose={closeModal} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create a new folder</ModalHeader>
@@ -29,30 +34,27 @@ export const NewFolderModal = () => {
             </FormControl>
           </ModalBody>
           <ModalFooter display='flex' alignItems='center' gap={3}>
-            <Button variant='ghost' onClick={onClose} >Cancel</Button>
+            <Button variant='ghost' onClick={closeModal} >Cancel</Button>
             <Button onClick={async () => {
               try {
                 await addFolder(inputValue);
-                onClose();
                 toast({
                   title: `New folder has been created: "${inputValue}"`,
                   description: "We've created a new folder for you.",
                   status: 'success',
                   duration: 3000,
                   isClosable: true,
-                  variant: 'left-accent',
                   position: 'top'
                 });
-                setInputValue('');
+                closeModal();
               } catch(err) {
-                console.error("Error during creating a new folder: ", err);
+                console.error("An error occured during folder creation: ", err);
                 toast({
                   title: "This folder hasn't been created, try again.",
-                  description: "Some problem has occured while we were creating a new folder for you, try again.",
+                  description: "Some problem has occured while we were creating new folder for you, try again.",
                   status: 'error',
                   duration: 3000,
                   isClosable: true,
-                  variant: 'left-accent',
                   position: 'top'
                 })
               }

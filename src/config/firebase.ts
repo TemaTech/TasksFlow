@@ -79,28 +79,16 @@ export const listenForFolders = async (setFolders: React.Dispatch<React.SetState
   }
 }
 
-interface FolderTasks {
-  taskName: string;
-  taskDescription: string;
-  taskPriority: string;
-  taskUntilDate: string;
-}
-
-export const listenForFolderTasks = async (folderId: string | null, setFolderTasks: React.Dispatch<React.SetStateAction<FolderTasks[] | null>>) => {
+export const listenForFolderTasks = async (folderId: string | null, setFolderTasks: React.Dispatch<React.SetStateAction<string[] | null>>) => {
   try {
     useEffect(() => {
       const auth = getAuth();
       const uid = auth?.currentUser?.uid || '';
       if (folderId) {
         const unsubscribe = onSnapshot(collection(db, uid, folderId, "tasks"), docs => {
-          const tasks: FolderTasks[] = [];
+          const tasks: string[] = [];
           docs.forEach(doc => {
-            tasks.push({
-              taskName: doc.data().taskName,
-              taskDescription: doc.data().taskDescription,
-              taskPriority: doc.data().taskPriority,
-              taskUntilDate: doc.data().taskUntilDate,
-            });
+            tasks.push(doc.id);
           });
           setFolderTasks(tasks);
         });
@@ -136,6 +124,7 @@ interface Task {
   taskDescription: string;
   taskPriority: string;
   taskUntilDate: string;
+  isDone: boolean;
 }
 
 export const addTask = async (folderID: string, task: Task) => {
@@ -161,20 +150,52 @@ export const deleteTask = async (folderID: string, taskID: string) => {
   }
 }
 
-export const updateTask = async (folderID: string, taskID: string, propertyName: string, newValue: string) => {
+export const updateTask = async (folderID: string, taskID: string, property: string, newValue: string | boolean) => {
   try {
     const auth = getAuth();
     const uid = auth?.currentUser?.uid || '';
     const taskRef = doc(db, uid, folderID, "tasks", taskID);
     await updateDoc(taskRef, {
-      [propertyName]: newValue,
+      [property]: newValue,
     });
   } catch(err) {
     console.error("Error during updateTask: ", err);
   }
 }
 
-// Get the task data
+export const listenForTaskProperty = async (folderId: string, taskId: string, property: string, setTaskProperty: React.Dispatch<React.SetStateAction<string | null>>) => {
+  try {
+    useEffect(() => {
+      const auth = getAuth();
+      const uid = auth?.currentUser?.uid || '';
+      if (folderId && taskId) {
+        const unsubscribe = onSnapshot(doc(db, uid, folderId, "tasks", taskId), doc => {
+          setTaskProperty(doc.data()?.[property]);
+        });
+        return () => unsubscribe();
+      }
+    }, [folderId])
+  } catch(err) {
+    console.error("Error during listenForTask: ", err);
+  }
+}
+
+export const listenForTaskIsDone = async (folderId: string, taskId: string, setTaskProperty: React.Dispatch<React.SetStateAction<boolean | null>>) => {
+  try {
+    useEffect(() => {
+      const auth = getAuth();
+      const uid = auth?.currentUser?.uid || '';
+      if (folderId && taskId) {
+        const unsubscribe = onSnapshot(doc(db, uid, folderId, "tasks", taskId), doc => {
+          setTaskProperty(doc.data()?.isDone);
+        });
+        return () => unsubscribe();
+      }
+    }, [folderId])
+  } catch(err) {
+    console.error("Error during listenForTask: ", err);
+  }
+}
 
 // Authentication
 
