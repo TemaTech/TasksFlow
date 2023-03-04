@@ -3,6 +3,7 @@ import { useState } from "react";
 import { listenForFolderName, listenForFolderTasks } from "../../config/firebase";
 import { NewTaskModal } from './NewTaskModal'
 import { ListItem } from './ListItem'
+import { NewFolderModal } from "../foldersList/NewFolderModal";
 
 interface Props {
   folderID: string | null
@@ -33,8 +34,9 @@ export const List = ({ folderID }: Props) => {
       </Flex>
     </Flex>
   ) : (
-    <Flex align='center' justify='center' h='100%' w='100%'>
-      <Heading textAlign='center' as='h2' fontSize='md' color='gray.500'>Select a folder in the side menu, or create a new one.</Heading>
+    <Flex align='center' direction='column' justify='center' h='100%' w='100%' gap={5}>
+      <Heading textAlign='center' fontSize='lg' color='gray.500'>It seems like you don't have any folders, so you can create one!</Heading>
+      <NewFolderModal />
     </Flex>
   );
 }

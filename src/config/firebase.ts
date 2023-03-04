@@ -79,6 +79,23 @@ export const listenForFolders = async (setFolders: React.Dispatch<React.SetState
   }
 }
 
+export const listenForFistFolderId = async (setFolders: React.Dispatch<React.SetStateAction<string | null>>) => {
+  try {
+    const auth = getAuth();
+    const uid = auth?.currentUser?.uid || '';
+    const unsubscribe = onSnapshot(collection(db, uid), docs => {
+      const folders: string[] = [];
+      docs.forEach(doc => {
+        folders.push(doc.id);
+      });
+      setFolders(folders[0]);
+    });
+    return () => unsubscribe();
+  } catch(err) {
+    console.error("Error during listenForFistFolderId: ", err);
+  }
+}
+
 export const listenForFolderTasks = async (folderId: string | null, setFolderTasks: React.Dispatch<React.SetStateAction<string[] | null>>) => {
   try {
     useEffect(() => {
